@@ -6,7 +6,7 @@ pipeline {
         EC2_IP = '18.119.119.255'
         DockerComposeFile = 'docker-compose.yml'
         DotEnvFile = '.env'
-        SSH_KEY_PATH = 'C:\Users\John Climie\Desktop\ssh\ec2.pem'  // Update this to your actual private key path on Jenkins node
+        SSH_KEY_PATH = 'C:\\Users\\John Climie\\Desktop\\ssh\\ec2.pem'  // Update this to your actual private key path on Jenkins node
     }
 
     stages {
