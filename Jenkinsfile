@@ -6,6 +6,7 @@ pipeline {
         EC2_IP = '18.119.119.255'
         DockerComposeFile = 'docker-compose.yml'
         DotEnvFile = '.env'
+        SSH_KEY_PATH = 'C:\Users\John Climie\Desktop\ssh\ec2.pem'  // Update this to your actual private key path on Jenkins node
     }
 
     stages {
@@ -13,7 +14,7 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker Image..."
-                    bat 'docker build -t %ImageRegistry%/%JOB_NAME%:%BUILD_NUMBER% .'
+                    bat "docker build -t %ImageRegistry%/%JOB_NAME%:%BUILD_NUMBER% ."
                 }
             }
         }
@@ -36,14 +37,12 @@ pipeline {
             steps {
                 script {
                     echo "Deploying with Docker Compose..."
-                    sshagent(['ec2']) {
-                        // Use double quotes to allow variable expansion in bat, and escape inner quotes
-                        bat """
-                        scp -o StrictHostKeyChecking=no %DotEnvFile% %DockerComposeFile% ubuntu@%EC2_IP%:/home/ubuntu
-                        ssh -o StrictHostKeyChecking=no ubuntu@%EC2_IP% "docker compose -f /home/ubuntu/%DockerComposeFile% --env-file /home/ubuntu/%DotEnvFile% down"
-                        ssh -o StrictHostKeyChecking=no ubuntu@%EC2_IP% "docker compose -f /home/ubuntu/%DockerComposeFile% --env-file /home/ubuntu/%DotEnvFile% up -d"
-                        """
-                    }
+                    // Use SSH key directly; no sshagent block
+                    bat """
+                    scp -o StrictHostKeyChecking=no -i %SSH_KEY_PATH% %DotEnvFile% %DockerComposeFile% ubuntu@%EC2_IP%:/home/ubuntu
+                    ssh -o StrictHostKeyChecking=no -i %SSH_KEY_PATH% ubuntu@%EC2_IP% "docker compose -f /home/ubuntu/%DockerComposeFile% --env-file /home/ubuntu/%DotEnvFile% down"
+                    ssh -o StrictHostKeyChecking=no -i %SSH_KEY_PATH% ubuntu@%EC2_IP% "docker compose -f /home/ubuntu/%DockerComposeFile% --env-file /home/ubuntu/%DotEnvFile% up -d"
+                    """
                 }
             }
         }
