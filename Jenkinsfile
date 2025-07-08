@@ -37,14 +37,14 @@ pipeline {
             steps {
                 script {
                     echo "Deploying with Docker Compose..."
-                    // Use SSH key directly; no sshagent block
                     bat """
-                    scp -o StrictHostKeyChecking=no -i %SSH_KEY_PATH% %DotEnvFile% %DockerComposeFile% ubuntu@%EC2_IP%:/home/ubuntu
-                    ssh -o StrictHostKeyChecking=no -i %SSH_KEY_PATH% ubuntu@%EC2_IP% "docker compose -f /home/ubuntu/%DockerComposeFile% --env-file /home/ubuntu/%DotEnvFile% down"
-                    ssh -o StrictHostKeyChecking=no -i %SSH_KEY_PATH% ubuntu@%EC2_IP% "docker compose -f /home/ubuntu/%DockerComposeFile% --env-file /home/ubuntu/%DotEnvFile% up -d"
+                    scp -o StrictHostKeyChecking=no -i "\\"C:\\Users\\John Climie\\Desktop\\ssh\\ec2.pem\\"" %DotEnvFile% %DockerComposeFile% ubuntu@%EC2_IP%:/home/ubuntu
+                    ssh -o StrictHostKeyChecking=no -i "\\"C:\\Users\\John Climie\\Desktop\\ssh\\ec2.pem\\"" ubuntu@%EC2_IP% "docker compose -f /home/ubuntu/%DockerComposeFile% --env-file /home/ubuntu/%DotEnvFile% down"
+                    ssh -o StrictHostKeyChecking=no -i "\\"C:\\Users\\John Climie\\Desktop\\ssh\\ec2.pem\\"" ubuntu@%EC2_IP% "docker compose -f /home/ubuntu/%DockerComposeFile% --env-file /home/ubuntu/%DotEnvFile% up -d"
                     """
                 }
             }
         }
+
     }
 }
